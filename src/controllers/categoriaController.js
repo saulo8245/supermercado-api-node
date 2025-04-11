@@ -1,4 +1,6 @@
 const Categoria = require('../models/Categoria');
+const Produto = require('../models/Produto');
+
 
 // Criar nova categoria
 exports.criarCategoria = async (req, res) => {
@@ -56,8 +58,14 @@ exports.deletarCategoria = async (req, res) => {
   try {
     const { id } = req.params;
 
+    // ✅ Verifica se existe produto com essa categoria
+    const produtosRelacionados = await Produto.findOne({ categoria: id });
+    if (produtosRelacionados) {
+      return res.status(400).json({
+        erro: 'Não é possível excluir uma categoria que possui produtos associados.'
+      });
+    }
     const categoriaDeletada = await Categoria.findByIdAndDelete(id);
-
     if (!categoriaDeletada) {
       return res.status(404).json({ erro: 'Categoria não encontrada.' });
     }

@@ -1,4 +1,7 @@
 const Produto = require('../models/Produto');
+const Categoria = require('../models/Categoria');
+const mongoose = require('mongoose');
+
 
 // Criar novo produto
 exports.criarProduto = async (req, res) => {
@@ -12,6 +15,12 @@ exports.criarProduto = async (req, res) => {
       urlImagem,
       categoria
     } = req.body;
+
+    // ✅ Verifica se a categoria existe
+    const categoriaExiste = await Categoria.findById(categoria);
+    if (!categoriaExiste) {
+      return res.status(400).json({ erro: 'Categoria inválida ou inexistente.' });
+    }
 
     const novoProduto = new Produto({
       nome,
@@ -29,6 +38,7 @@ exports.criarProduto = async (req, res) => {
     res.status(500).json({ erro: 'Erro ao criar produto.' });
   }
 };
+
 
 // Listar todos os produtos
 exports.listarProdutos = async (req, res) => {
@@ -57,6 +67,10 @@ exports.atualizarProduto = async (req, res) => {
     const { id } = req.params;
     const atualizacao = req.body;
 
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ erro: 'ID inválido.' });
+    }
+
     const produtoAtualizado = await Produto.findByIdAndUpdate(id, atualizacao, { new: true });
 
     if (!produtoAtualizado) {
@@ -73,6 +87,11 @@ exports.atualizarProduto = async (req, res) => {
 exports.deletarProduto = async (req, res) => {
   try {
     const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ erro: 'ID inválido.' });
+    }
+
     const produto = await Produto.findByIdAndDelete(id);
 
     if (!produto) {

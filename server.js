@@ -3,6 +3,8 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 
+
+
 // Middleware para interpretar JSON
 app.use(express.json());
 
@@ -13,7 +15,9 @@ const produtoRoutes = require('./src/routes/produtoRoutes');
 const listaComprasRoutes = require('./src/routes/listaComprasRoutes');
 const carrinhoRoutes = require('./src/routes/carrinhoRoutes');
 const perfilRoutes = require('./src/routes/perfilRoutes');
+
 const setupSwagger = require('./src/config/swaggerConfig');
+const adminRoutes = require('./src/routes/adminRoutes');
 
 
 
@@ -26,6 +30,8 @@ app.use('/api/listas', listaComprasRoutes);
 app.use('/api/carrinho', carrinhoRoutes);
 app.use('/api/perfil', perfilRoutes);
 setupSwagger(app);
+app.use('/api/admin', adminRoutes);
+
 
 
 

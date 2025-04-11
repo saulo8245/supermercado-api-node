@@ -1,5 +1,6 @@
 const Carrinho = require('../models/Carrinho');
-
+const mongoose = require('mongoose');
+const Produto = require('../models/Produto');
 // Obter carrinho do usuário logado
 exports.getCarrinho = async (req, res) => {
   try {
@@ -21,6 +22,15 @@ exports.adicionarItem = async (req, res) => {
   try {
     const { produto, quantidade } = req.body;
 
+    if (!mongoose.Types.ObjectId.isValid(produto)) {
+      return res.status(400).json({ erro: 'ID do produto inválido.' });
+    }
+
+    const produtoExiste = await Produto.findById(produto);
+    if (!produtoExiste) {
+      return res.status(400).json({ erro: 'Produto não encontrado.' });
+    }
+
     let carrinho = await Carrinho.findOne({ usuario: req.usuario._id });
 
     if (!carrinho) {
@@ -32,7 +42,6 @@ exports.adicionarItem = async (req, res) => {
       const index = carrinho.itens.findIndex(item => item.produto.toString() === produto);
 
       if (index !== -1) {
-        // Se já existe, atualiza a quantidade
         carrinho.itens[index].quantidade += quantidade;
       } else {
         carrinho.itens.push({ produto, quantidade });
@@ -51,6 +60,10 @@ exports.atualizarItem = async (req, res) => {
   try {
     const { produtoId } = req.params;
     const { quantidade } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(produtoId)) {
+      return res.status(400).json({ erro: 'ID do produto inválido.' });
+    }
 
     const carrinho = await Carrinho.findOne({ usuario: req.usuario._id });
     if (!carrinho) return res.status(404).json({ erro: 'Carrinho não encontrado.' });
@@ -71,6 +84,10 @@ exports.atualizarItem = async (req, res) => {
 exports.removerItem = async (req, res) => {
   try {
     const { produtoId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(produtoId)) {
+      return res.status(400).json({ erro: 'ID do produto inválido.' });
+    }
 
     const carrinho = await Carrinho.findOneAndUpdate(
       { usuario: req.usuario._id },

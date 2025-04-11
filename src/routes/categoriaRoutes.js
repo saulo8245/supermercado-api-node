@@ -1,14 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const categoriaController = require('../controllers/categoriaController');
-const proteger = require('../middlewares/authMiddleware'); // pra rotas protegidas
+const proteger = require('../middlewares/authMiddleware');
+const somenteAdmin = require('../middlewares/adminMiddleware');
 
-// Rotas públicas
+// Rota pública: listar categorias
 router.get('/', categoriaController.listarCategorias);
 
-// Rotas protegidas (ex: só usuários autenticados podem mexer em categorias)
-router.post('/', proteger, categoriaController.criarCategoria);
-router.put('/:id', proteger, categoriaController.atualizarCategoria);
-router.delete('/:id', proteger, categoriaController.deletarCategoria);
+// Rotas protegidas: apenas admin pode criar, editar, deletar
+router.post('/', proteger, somenteAdmin, categoriaController.criarCategoria);
+router.put('/:id', proteger, somenteAdmin, categoriaController.atualizarCategoria);
+router.delete('/:id', proteger, somenteAdmin, categoriaController.deletarCategoria);
 
 module.exports = router;
