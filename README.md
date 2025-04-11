@@ -93,4 +93,5 @@ Este projeto é open-source, disponível sob a licença MIT.
 
 ## 👨‍💻 Autor
 
-Desenvolvido por [Seu Nome] — projeto de portfólio 💼
+Desenvolvido por Saulo Barbosa de Oliveira — projeto de portfólio 💼
+Readme realizado com ajuda de IA
