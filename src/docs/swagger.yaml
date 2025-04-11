@@ -1,0 +1,374 @@
+openapi: 3.0.0
+info:
+  title: API Supermercado
+  version: 1.0.0
+  description: Documentação da API para o aplicativo de supermercado
+
+servers:
+  - url: http://localhost:3000
+
+paths:
+  /api/usuarios/registrar:
+    post:
+      summary: Registrar novo usuário
+      tags:
+        - Usuários
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nome:
+                  type: string
+                email:
+                  type: string
+                senha:
+                  type: string
+                urlImagem:
+                  type: string
+                funcao:
+                  type: string
+              required: [nome, email, senha]
+      responses:
+        '201':
+          description: Usuário criado com sucesso
+
+  /api/usuarios/login:
+    post:
+      summary: Fazer login
+      tags:
+        - Usuários
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                senha:
+                  type: string
+              required: [email, senha]
+      responses:
+        '200':
+          description: Login realizado com sucesso
+
+  /api/categorias:
+    get:
+      summary: Listar categorias
+      tags:
+        - Categorias
+      responses:
+        '200':
+          description: Lista de categorias retornada com sucesso
+
+    post:
+      summary: Criar nova categoria
+      tags:
+        - Categorias
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nome:
+                  type: string
+                urlImagem:
+                  type: string
+              required: [nome]
+      responses:
+        '201':
+          description: Categoria criada com sucesso
+
+  /api/produtos:
+    get:
+      summary: Listar todos os produtos
+      tags:
+        - Produtos
+      responses:
+        '200':
+          description: Lista de produtos retornada com sucesso
+
+    post:
+      summary: Criar novo produto
+      tags:
+        - Produtos
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nome:
+                  type: string
+                descricao:
+                  type: string
+                preco:
+                  type: number
+                precoComDesconto:
+                  type: number
+                urlImagem:
+                  type: string
+                categoria:
+                  type: string
+              required: [nome, preco, categoria]
+      responses:
+        '201':
+          description: Produto criado com sucesso
+
+  /api/produtos/categoria/{categoriaId}:
+    get:
+      summary: Listar produtos por categoria
+      tags:
+        - Produtos
+      parameters:
+        - name: categoriaId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Produtos da categoria retornados com sucesso
+
+  /api/listas:
+    get:
+      summary: Listar listas de compras do usuário
+      tags:
+        - Listas de Compras
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Listas retornadas com sucesso
+
+    post:
+      summary: Criar nova lista de compras
+      tags:
+        - Listas de Compras
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nome:
+                  type: string
+                itens:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      produto:
+                        type: string
+                      quantidade:
+                        type: number
+              required: [nome, itens]
+      responses:
+        '201':
+          description: Lista criada com sucesso
+
+  /api/listas/{id}:
+    put:
+      summary: Atualizar lista de compras
+      tags:
+        - Listas de Compras
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nome:
+                  type: string
+                itens:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      produto:
+                        type: string
+                      quantidade:
+                        type: number
+      responses:
+        '200':
+          description: Lista atualizada com sucesso
+
+    delete:
+      summary: Deletar lista de compras
+      tags:
+        - Listas de Compras
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista deletada com sucesso
+
+  /api/carrinho:
+    get:
+      summary: Obter carrinho do usuário
+      tags:
+        - Carrinho
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Carrinho retornado com sucesso
+
+    post:
+      summary: Adicionar item ao carrinho
+      tags:
+        - Carrinho
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                produto:
+                  type: string
+                quantidade:
+                  type: number
+              required: [produto, quantidade]
+      responses:
+        '200':
+          description: Item adicionado ao carrinho
+
+    delete:
+      summary: Esvaziar carrinho do usuário
+      tags:
+        - Carrinho
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Carrinho esvaziado com sucesso
+
+  /api/carrinho/{produtoId}:
+    put:
+      summary: Atualizar quantidade de item no carrinho
+      tags:
+        - Carrinho
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: produtoId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quantidade:
+                  type: number
+              required: [quantidade]
+      responses:
+        '200':
+          description: Quantidade atualizada
+
+    delete:
+      summary: Remover item específico do carrinho
+      tags:
+        - Carrinho
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: produtoId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Item removido do carrinho
+
+  /api/perfil:
+    put:
+      summary: Atualizar dados do perfil
+      tags:
+        - Perfil
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nome:
+                  type: string
+                email:
+                  type: string
+                urlImagem:
+                  type: string
+      responses:
+        '200':
+          description: Perfil atualizado com sucesso
+
+  /api/perfil/senha:
+    put:
+      summary: Trocar senha do usuário
+      tags:
+        - Perfil
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                senhaAtual:
+                  type: string
+                novaSenha:
+                  type: string
+              required: [senhaAtual, novaSenha]
+      responses:
+        '200':
+          description: Senha trocada com sucesso
+
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
