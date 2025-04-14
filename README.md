@@ -58,7 +58,7 @@ Você pode testar todos os endpoints localmente via:
 
 📘 Documentação interativa via Swagger:
 
-📍 `http://localhost:3000/api-docs`
+📍 `https://supermercado-api-node.onrender.com/api-docs/#/`
 
 ---
 

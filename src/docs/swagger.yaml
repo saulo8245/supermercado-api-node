@@ -194,7 +194,7 @@ paths:
 
   /api/listas:
     get:
-      summary: Listar listas de compras do usuário
+      summary: Listar listas de compras do usuário logado
       tags:
         - Listas de Compras
       security:
@@ -285,7 +285,7 @@ paths:
 
   /api/carrinho:
     get:
-      summary: Obter carrinho do usuário
+      summary: Obter carrinho do usuário logado
       tags:
         - Carrinho
       security:
@@ -371,7 +371,7 @@ paths:
 
   /api/perfil:
     put:
-      summary: Atualizar dados do perfil
+      summary: Atualizar dados do perfil do usuário
       tags:
         - Perfil
       security:
