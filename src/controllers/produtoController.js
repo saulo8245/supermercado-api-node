@@ -1,11 +1,17 @@
 const Produto = require('../models/Produto');
 const Categoria = require('../models/Categoria');
 const mongoose = require('mongoose');
+const { produtoSchema } = require('../validations/produtoValidation');
 
 
 // Criar novo produto
 exports.criarProduto = async (req, res) => {
   try {
+    const { error } = produtoSchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({ erro: error.details[0].message });
+    }
+
     const {
       nome,
       descricao,
@@ -16,7 +22,6 @@ exports.criarProduto = async (req, res) => {
       categoria
     } = req.body;
 
-    // ✅ Verifica se a categoria existe
     const categoriaExiste = await Categoria.findById(categoria);
     if (!categoriaExiste) {
       return res.status(400).json({ erro: 'Categoria inválida ou inexistente.' });
